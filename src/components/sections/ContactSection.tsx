@@ -19,9 +19,26 @@ export function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setState('loading')
-    // Simulate API call
-    await new Promise((res) => setTimeout(res, 1200))
-    setState('success')
+
+    const TOKEN = '8838840245:AAGKBzCWH0XVI54ghnSgFhrfOdRbArYwMXc'      // от @BotFather
+    const CHAT_ID = '853856548'  // от @userinfobot
+
+    const text = `🔔 Новая заявка с сайта!\n\n` +
+                 `👤 Имя: ${form.name}\n` +
+                 `📞 Телефон: ${form.phone}\n` +
+                 `📋 Задачи: ${form.task || 'не указано'}\n\n` +
+                 `🕐 ${new Date().toLocaleString('ru-RU')}`
+
+    try {
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      })
+      setState('success')
+    } catch {
+      setState('error')
+    }
   }
 
   return (
